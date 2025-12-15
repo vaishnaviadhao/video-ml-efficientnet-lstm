@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+
+# Data & artifacts
+Frames/
+Features_V1/
+Sequences_V1/
+Dataset/
+Metadata/
+*.npy
+*.keras
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Virtual env
+venv/
+.env/

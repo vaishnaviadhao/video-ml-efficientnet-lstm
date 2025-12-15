@@ -1,0 +1,128 @@
+# AI vs Real Video Classification using EfficientNet + LSTM
+
+This project implements an end-to-end **video classification pipeline** to distinguish **AI-generated (Fake)** videos from **Real** videos using deep learning.
+
+The system follows a **frame-based + temporal modeling approach**, combining a CNN for spatial feature extraction and an LSTM for temporal understanding.
+
+---
+
+## 🔍 Problem Statement
+
+Given a video, determine whether it is:
+- **AI-generated (Fake)**
+- **Authentic (Real)**
+
+Key challenges:
+- Frame-level noise
+- Temporal inconsistencies in AI-generated videos
+- Limited labeled video data
+
+---
+
+## Architecture Overview
+Video (.mp4)
+→ Frame Extraction (1 FPS)
+→ EfficientNet-B3 (frame-level features)
+→ Temporal Sequence Builder (fixed length)
+→ LSTM-based Classifier
+→ Fake / Real Prediction
+
+
+---
+
+## 🧩 Pipeline Breakdown
+
+### 1️⃣ Frame Extraction
+- Videos are converted to frames at **1 frame per second**
+- Stored as:
+Frames/
+├── Fake/<video_id>/frame_xxxx.jpg
+└── Real/<video_id>/frame_xxxx.jpg
+
+
+### 2️⃣ Feature Extraction (EfficientNet-B3)
+- Pretrained **EfficientNet-B3** (ImageNet weights)
+- Classification head removed
+- Global Average Pooling used
+- Output: **1536-dim feature per frame**
+
+### 3️⃣ Temporal Sequence Construction
+- Each video converted into a fixed-length sequence of **64 frames**
+- Padding or uniform sampling applied
+
+### 4️⃣ Temporal Modeling
+- **LSTM-based neural network**
+- Learns temporal patterns across frames
+- Binary classification (Fake vs Real)
+
+---
+
+## 📊 Results
+
+| Metric | Value |
+|------|------|
+| Validation Accuracy | **100%** |
+| Validation ROC-AUC | **1.00** |
+| Precision / Recall / F1 | **1.00 / 1.00 / 1.00** |
+
+> ⚠️ Note: Dataset size is small. High accuracy indicates proof-of-concept rather than generalization.
+
+---
+
+## 📁 Project Structure
+
+Video_ML_Code/
+├── Dataset/ # Raw videos (Fake / Real)
+├── Frames/ # Extracted frames
+├── Metadata/ # Frame metadata CSVs
+├── Features_V1/ # EfficientNet features (.npy)
+├── Sequences_V1/ # Fixed-length sequences
+├── extract_frames.py
+├── feature_extraction_b3_V1.py
+├── build_sequences_b3_V1.py
+├── temporal_lstm_v1.py
+├── train_temporal_model_v1.py
+├── video_labels.csv
+├── best_temporal_model.keras
+└── README.md
+
+
+---
+
+## 🛠️ Tech Stack
+
+- Python 3.12
+- TensorFlow / Keras
+- EfficientNet-B3
+- NumPy, Pandas
+- OpenCV
+- scikit-learn
+
+---
+
+## ⚙️ Environment Notes
+
+- TensorFlow requires **Python ≤ 3.12**
+- NumPy pinned to `<2.0` for TensorFlow compatibility
+- Tested on **Windows & macOS**
+
+---
+
+## 🚀 How to Run
+
+```bash
+# Extract frames
+python extract_frames.py
+
+# Generate metadata
+python create_metadata_csv.py
+
+# Extract CNN features
+python feature_extraction_b3_V1.py
+
+# Build temporal sequences
+python build_sequences_b3_V1.py
+
+# Train temporal model
+python train_temporal_model_v1.py
+
